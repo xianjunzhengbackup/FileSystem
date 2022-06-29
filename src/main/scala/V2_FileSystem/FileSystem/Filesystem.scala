@@ -1,8 +1,7 @@
-package V1_FileSystem.FileSystem
+package V2_FileSystem.FileSystem
 
-import V1_FileSystem.Command.Command
-
-import V1_FileSystem.files.Directory
+import V2_FileSystem.Command.Command
+import V2_FileSystem.files.Directory
 
 import java.util.Scanner
 

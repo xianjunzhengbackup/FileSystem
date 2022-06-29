@@ -1,6 +1,6 @@
-package V1_FileSystem.Command
+package V2_FileSystem.Command
 
-import V1_FileSystem.FileSystem.State
+import V2_FileSystem.FileSystem.State
 
 trait Command {
   def apply(state:State):State
