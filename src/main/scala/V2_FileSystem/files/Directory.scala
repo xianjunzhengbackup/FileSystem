@@ -52,9 +52,35 @@ class Directory(override val parentPath:String,override val name:String,val chil
     val res = for (entry <- allEntries if (entry.name.equals(name) & entry.parentPath.equals(parentPath))) yield entry
     res(0)
   }
-  def updateForParent(root:Directory)={
-    val parentName = parentPath.split("/")(-1)
-    val parent = root.findEntryInDescendant(parentPath,name)
+
+  def infoParent():List[String]={
+    //找到parent的parnetPath以及parent名字，为下面updateForParent服务
+    //它将返回一个list，第一个String将是Grandpa path，第二个String将是parent's name
+    //假如parentPath是/a/b/c
+    var newPath=""
+    if(parentPath.isEmpty) List("","")
+    else {
+      val nameList=parentPath.split("/") //["",a,b,c]
+      val name = nameList(nameList.length-1)  // c
+      val newnameList=nameList.patch(nameList.length-1,Nil,1) //["",a,b]
+      newnameList.foreach(newPath += "/"+_)  //newPath://a/b
+      newPath=newPath.substring(1) //   /a/b
+      List(newPath,name)  //[c,/a/b]
+    }
+
+
+  }
+  def updateForParent(root:Directory) : Directory={
+    //1.找到自个的父亲 clone一个新父亲出来
+    // 2.在新父亲的child list中找到跟自己同名的，删掉它，把自己加入这个child list中
+    //3. 递归调用新父亲的updateForParent，直到递归到root，然后返回这个新root
+    val List(path,name) = if(parentPath.equals("")) List("","") else infoParent()
+    val parent= if(parentPath.equals("")) root else root.findEntryInDescendant(parentPath=path, name=name)
+    val removeOldSelf=for(each <- parent.child if each.name.equals(this.name)==false) yield each
+    val newChildList = removeOldSelf.toList ++ List(this)
+    val newParent=new Directory(parent.parentPath,parent.name,newChildList)
+    if(parentPath.equals("")) newParent
+    else newParent.updateForParent(root)
   }
 }
 

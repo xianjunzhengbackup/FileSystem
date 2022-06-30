@@ -4,21 +4,14 @@ import org.scalatest.{Matchers, WordSpec}
 class testDirectory extends WordSpec with Matchers {
 
   /*
-  Manually create                       /
-                                      a       aa
-                                   bb     b
-                                        cc  c
-                                           dd d
-   */
-  /*
-   "A Person" should {
-    "be instantialed with an age and name" in {
-      val john = Person(firstName="John",lastName="Smith",42)
-      john.firstName should be("John")
-      john.lastName should be("Smith")
-      john.age should be(42)
-    }
-  }
+  manually created folders for testing purpose
+  /a
+  /a/bb
+  /a/b
+  /a/b/cc
+  /a/b/c
+  /a/b/c/d
+  /a/b/c/dd
    */
 
   val dDirectory=Directory.empty("/a/b/c","d")
@@ -99,4 +92,33 @@ class testDirectory extends WordSpec with Matchers {
     }
   }
 
+  "def infoParent():List[String]将返回List(String,String)，第一个String是parent的parentPath，第二个String将是parent的名字" should {
+    "/a/b/c将返回[/a,b]" in {
+      cDirectory.infoParent() should be(List("/a", "b"))
+    }
+    "/a将返回[,]" in {
+      aDirectory.infoParent() should be(List("", ""))
+    }
+    "/a/b将返回[,a]" in {
+      bDirectory.infoParent() should be(List("", "a"))
+    }
+  }
+
+  "updateForParent(root:Directory)用于添加删除子目录后的更新parent用的，它将返回一个新的root directory" should{
+    "create e folder and a new d folder,d foler is e's parent"in{
+      val eDirectory=Directory.empty("/a/b/c/d","e")
+      val newroot=eDirectory.updateForParent(root)
+      newroot.returnAllEntryInDescendant().map(_.name) should be(List("aa", "", "bb","a", "cc", "b", "dd", "c", "e", "d"))
+    }
+    "create aaa folder under /" in{
+      val aaaDirectory=Directory.empty("",name="aaa")
+      val newroot=aaaDirectory.updateForParent(root)
+      newroot.returnAllEntryInDescendant().map(_.name) should be(List("bb", "a", "cc", "b", "d", "c", "dd", "", "aa", "aaa"))
+    }
+    "create ccc folder under /a/b" in{
+      val cccDirectory=Directory.empty("/a/b","ccc")
+      val newroot=cccDirectory.updateForParent(root)
+      newroot.returnAllEntryInDescendant().map(_.name) should be(List("aa", "", "bb", "a", "cc", "b", "d", "c", "dd", "ccc"))
+    }
+  }
 }
