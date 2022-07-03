@@ -74,7 +74,7 @@ class Directory(override val parentPath:String,override val name:String,val chil
     //1.找到自个的父亲 clone一个新父亲出来
     // 2.在新父亲的child list中找到跟自己同名的，删掉它，把自己加入这个child list中
     //3. 递归调用新父亲的updateForParent，直到递归到root，然后返回这个新root
-    val List(path,name) = if(parentPath.equals("")) List("","") else infoParent()
+    val List(path,name) = if(parentPath.equals("") | parentPath.equals("/")) List("","") else infoParent()
     val parent= if(parentPath.equals("")) root else root.findEntryInDescendant(parentPath=path, name=name)
     val removeOldSelf=for(each <- parent.child if each.name.equals(this.name)==false) yield each
     val newChildList = removeOldSelf.toList ++ List(this)

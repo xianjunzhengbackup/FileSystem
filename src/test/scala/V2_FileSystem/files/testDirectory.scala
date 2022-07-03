@@ -46,6 +46,9 @@ class testDirectory extends WordSpec with Matchers {
     "/a/b/c/d doesn't have e folder"in{
       dDirectory.hasEntry("e") should be(false)
     }
+    "check root contains /a folder"in{
+      root.hasEntry("a") should be(true)
+    }
   }
 
   "hasEntryInDescendant(name:String)检查当前目录以及当前目录以下的所有的子目录是否包含名字叫name的目录，如果有返回true,否则false" should{
@@ -62,6 +65,7 @@ class testDirectory extends WordSpec with Matchers {
     "/a/b/c/cc shouldn't exist" in{
       root.hasEntryInDescendant("/a/b/c","cc") should be(false)
     }
+
   }
 
   "returnAllEntryInDescendant将返回List[Directory]，包括当前目录以及底下的所有目录" should{
@@ -89,6 +93,9 @@ class testDirectory extends WordSpec with Matchers {
     }
     "should display /a/b/c" in{
       root.findEntryInDescendant(parentPath="/a/b",name="c").path should be("/a/b/c")
+    }
+    "find /a then print its path"in{
+      root.findEntryInDescendant("","a").path should be("/a")
     }
   }
 

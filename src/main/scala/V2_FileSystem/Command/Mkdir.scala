@@ -10,9 +10,15 @@ class Mkdir(str:String) extends Command {
   def doMkdir(state: State, str :String =this.str): _root_.V2_FileSystem.FileSystem.State = {
     val wd=state.wd
     val root=state.root
-    val newDirectory=Directory.empty(wd.path,str)
+    val parentNameFornewDirectory= if(wd.parentPath.equals("")) "" else wd.path
+    /*
+    假如是在wd是根目录，那么newDirectory的parentPath将是“”
+    假如wd是其它目录，则可以吧wd.path作为newDirectory的parentPath
+     */
+    val newDirectory=Directory.empty(parentNameFornewDirectory,str)
     val newroot=newDirectory.updateForParent(root)
-    val newState=new State(newroot,wd,s"$str is created!")
+    val newwd=newroot.findEntryInDescendant(wd.parentPath,wd.name)
+    val newState=new State(newroot,newwd,s"$str is created!")
     newState
   }
 

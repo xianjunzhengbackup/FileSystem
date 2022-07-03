@@ -53,10 +53,10 @@ class testMkdir extends WordSpec with Matchers{
     }
     "mkdir f under empty /" in{
       val newroot=Directory.empty("","")
-      val state=new State(newroot,newroot,output="mkdir f")
+      val state=new State(newroot,newroot,output="f")
       val mkdirCommand=new Mkdir("f")
       val newState=mkdirCommand.doMkdir(state)
-      println(newState.root.findEntryInDescendant("","f").path)
+      newState.root.findEntryInDescendant("","f").path should be("/f")
     }
   }
 
